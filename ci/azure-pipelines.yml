@@ -4,7 +4,7 @@ pool:
 variables:
   artifactsRootDir: $(System.DefaultWorkingDirectory)/.artifacts
 
-name: dynamics
+name: hello-cake
 trigger:
   branches:
     include:

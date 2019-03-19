@@ -170,20 +170,23 @@ Task("Copy-Files")
         Information("Copy static files to artifacts"); 
         CopyFileToDirectory("./LICENSE", parameters.Paths.Directories.Artifacts);
 
-        foreach (var project in GetFiles("./src/**/*[!Spec].csproj"))
+        foreach (var project in GetFiles("./src/**/*.csproj").Select(p => p.FullPath).ToList()
+            .Except(GetFiles("./src/**/*.Spec.csproj").Select(p => p.FullPath).ToList()))
         {
+            FilePath projectPath = File(project); 
+
             var settings = new DotNetCorePublishSettings 
             {
                 NoBuild = true,
                 NoRestore = true,
                 Configuration = parameters.Configuration,
-                OutputDirectory = $"{parameters.Paths.Directories.ArtifactsBin}/{project.GetFilenameWithoutExtension()}",
+                OutputDirectory = $"{parameters.Paths.Directories.ArtifactsBin}/{projectPath.GetFilenameWithoutExtension()}",
                 Framework = parameters.Framework,
                 MSBuildSettings = parameters.MSBuildSettings
             };
 
-            Information("Run publish for {0} ({1}) to {2}", project.GetFilenameWithoutExtension(), settings.Framework, settings.OutputDirectory); 
-            DotNetCorePublish(project.FullPath, settings);
+            Information("Run publish for {0} ({1}) to {2}", projectPath.GetFilenameWithoutExtension(), settings.Framework, settings.OutputDirectory); 
+            DotNetCorePublish(projectPath.FullPath, settings);
         }
     });
 

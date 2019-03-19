@@ -80,7 +80,7 @@ public class BuildParameters
         {
             Target           = context.Argument("target", "Default"),
             Configuration    = context.Argument("configuration", "Release"),
-            Framework        = context.Argument("framework", "net462"),
+            Framework        = context.Argument("framework", "netstandard2.0"),
 
             EnabledUnitTests      = IsEnabled(context, "ENABLED_UNIT_TESTS"),
             EnabledPublishNuget   = IsEnabled(context, "ENABLED_PUBLISH_NUGET"),
@@ -142,7 +142,7 @@ public class BuildParameters
         if(!string.IsNullOrWhiteSpace(repositoryName))
             context.Information("Repository Name: {0}", repositoryName);
 
-        return !string.IsNullOrWhiteSpace(repositoryName) && StringComparer.OrdinalIgnoreCase.Equals("libraries", repositoryName);
+        return !string.IsNullOrWhiteSpace(repositoryName) && StringComparer.OrdinalIgnoreCase.Equals("hello-cake", repositoryName);
     }
 
     private static bool IsOnMainBranch(ICakeContext context)
