@@ -1,10 +1,10 @@
 pool:
-  vmImage: vs2017-win2016
+  vmImage: win1803
 
 variables:
   artifactsRootDir: $(System.DefaultWorkingDirectory)/.artifacts
 
-name: dynamics
+name: hello-cake
 trigger:
   branches:
     include:
@@ -40,6 +40,7 @@ steps:
     displayName: 'Copy Files to Artifact Staging'
     inputs:
       SourceFolder: $(artifactsRootDir)
+      Contents: '\**\*.zip'
       TargetFolder: $(Build.ArtifactStagingDirectory)
 
   - task: PublishPipelineArtifact@0
@@ -47,5 +48,3 @@ steps:
     inputs:
       artifactName: 'drop'
       targetPath: $(Build.ArtifactStagingDirectory)
-
-
