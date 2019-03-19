@@ -47,5 +47,3 @@ steps:
     inputs:
       artifactName: 'drop'
       targetPath: $(Build.ArtifactStagingDirectory)
-
-
