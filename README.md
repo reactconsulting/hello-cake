@@ -1,4 +1,5 @@
 # Build automation with [Cake](https://cakebuild.net/) sample
+This project is a sample use of Cake Build for automate CI / CD with various continuous integration platform.
 
 ## Build Status
 |                               | __Develop__ |
