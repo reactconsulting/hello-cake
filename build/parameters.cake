@@ -59,8 +59,6 @@ public class BuildParameters
     public BuildPaths Paths { get; private set; }
     public BuildVersion Version { get; private set; }
 
-    public FilePath StrongSignKey { get; private set; }
-
     public bool IsStableRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && IsTagged;
     public bool IsPreRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && !IsTagged;
 
@@ -142,7 +140,7 @@ public class BuildParameters
         if(!string.IsNullOrWhiteSpace(repositoryName))
             context.Information("Repository Name: {0}", repositoryName);
 
-        return !string.IsNullOrWhiteSpace(repositoryName) && StringComparer.OrdinalIgnoreCase.Equals("hello-cake", repositoryName);
+        return !string.IsNullOrWhiteSpace(repositoryName) && StringComparer.OrdinalIgnoreCase.Equals("reactconsulting/hello-cake", repositoryName);
     }
 
     private static bool IsOnMainBranch(ICakeContext context)

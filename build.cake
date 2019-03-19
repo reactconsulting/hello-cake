@@ -195,10 +195,9 @@ Task("Pack-Zip")
     {
         var temp = parameters.Paths.Directories.Artifacts.Combine(parameters.Version.SemVersion);
         CreateDirectory(temp);
-        var helloCake = temp.Combine("HelloCake");
-        CreateDirectory(helloCake);
 
-        CopyFiles($"{parameters.Paths.Directories.ArtifactsBin}/**/*.dll", helloCake);
+        CopyFiles($"{parameters.Paths.Directories.ArtifactsBin}/**/*.dll", temp);
+        CopyFiles($"{parameters.Paths.Directories.Artifacts}/LICENSE", temp);
 
         Zip(temp, parameters.Paths.Files.ZipArtifact);
 
