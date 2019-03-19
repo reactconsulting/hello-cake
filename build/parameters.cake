@@ -108,6 +108,8 @@ public class BuildParameters
         Version = BuildVersion.Calculate(context, this, gitVersion);
         CoverageThreshold = lineCoverageThreshold;
         MSBuildSettings = GetMsBuildSettings(context, Version);
+
+        Paths = BuildPaths.GetPaths(context, Configuration, Version);
     }
 
     private DotNetCoreMSBuildSettings GetMsBuildSettings(ICakeContext context, BuildVersion version)
