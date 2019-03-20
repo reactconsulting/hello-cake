@@ -35,16 +35,4 @@ steps:
       summaryFileLocation: $(artifactsRootDir)/**/code-coverage/results.*.xml
       reportDirectory: $(artifactsRootDir)/**/code-coverage/results
       additionalCodeCoverageFiles: $(artifactsRootDir)/**/code-coverage/results/*
-
-  - task: CopyFiles@2
-    displayName: 'Copy Files to Artifact Staging'
-    inputs:
-      SourceFolder: $(artifactsRootDir)
-      Contents: '\**\*.zip'
-      TargetFolder: $(Build.ArtifactStagingDirectory)
-
-  - task: PublishPipelineArtifact@0
-    displayName: 'Publish Build Artifact'
-    inputs:
-      artifactName: 'drop'
-      targetPath: $(Build.ArtifactStagingDirectory)
+      

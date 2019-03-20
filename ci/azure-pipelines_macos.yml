@@ -14,8 +14,8 @@ trigger:
       - develop
 
 steps:
-  - script: |
-      build
+  - bash: |
+      pwsh '.\build.ps1'
     displayName: 'Build'
     continueOnError: false
 
