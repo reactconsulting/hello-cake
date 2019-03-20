@@ -35,3 +35,4 @@ steps:
       summaryFileLocation: $(artifactsRootDir)/**/code-coverage/results.*.xml
       reportDirectory: $(artifactsRootDir)/**/code-coverage/results
       additionalCodeCoverageFiles: $(artifactsRootDir)/**/code-coverage/results/*
+      
