@@ -15,6 +15,7 @@ trigger:
 
 steps:
   - script: |
+      brew cask install powershell
       build
     displayName: 'Build'
     continueOnError: false
