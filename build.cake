@@ -197,7 +197,10 @@ Task("Pack-Zip")
         CreateDirectory(temp);
 
         CopyFiles($"{parameters.Paths.Directories.ArtifactsBin}/**/*.dll", temp);
-        CopyFiles($"{parameters.Paths.Directories.Artifacts}/LICENSE", temp);
+        CopyFile($"{parameters.Paths.Directories.Artifacts}/LICENSE", $"{temp}/LICENSE.txt");
+
+        if(FileExists(parameters.Paths.Files.ReleaseNotes))
+            CopyFile(parameters.Paths.Files.ReleaseNotes, $"{temp}/{parameters.Paths.Files.ReleaseNotes.GetFilename()}");
 
         Zip(temp, parameters.Paths.Files.ZipArtifact);
 
@@ -219,7 +222,7 @@ Task("Release-Notes")
 Task("Copy")
     .IsDependentOn("Test")
     .IsDependentOn("Coverage-Report")
-    .IsDependentOn("Copy-Files")
+    .IsDependentOn("Copy-Files")    
     .Does(() =>
     {
 
@@ -227,6 +230,7 @@ Task("Copy")
 
 Task("Pack")
     .IsDependentOn("Copy")
+    .IsDependentOn("Release-Notes")
     .IsDependentOn("Pack-Zip")
     .Does(() =>
     {
@@ -235,7 +239,6 @@ Task("Pack")
 
 Task("Default")
     .IsDependentOn("Pack")
-    .IsDependentOn("Release-Notes")
     .Does(() =>
     {
 
