@@ -41,8 +41,8 @@ steps:
     inputs:
       SourceFolder: $(artifactsRootDir)
       Contents: |
-        \**\HelloCake.zip
-        \**\release-notes.md
+        /**/HelloCake.zip
+        /**/release-notes.md
       TargetFolder: $(Build.ArtifactStagingDirectory)
 
   - task: PublishPipelineArtifact@0
