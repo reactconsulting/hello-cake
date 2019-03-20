@@ -39,10 +39,9 @@ steps:
   - task: CopyFiles@2
     displayName: 'Copy Files to Artifact Staging'
     inputs:
-      SourceFolder: $(artifactsRootDir)
       Contents: |
-        \**\*.zip
-        \**\release-notes.md
+        $(artifactsRootDir)\**\*.zip
+        $(artifactsRootDir)\**\release-notes.md
       TargetFolder: $(Build.ArtifactStagingDirectory)
 
   - task: PublishPipelineArtifact@0
