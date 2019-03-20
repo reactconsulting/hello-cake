@@ -24,7 +24,7 @@ public class BuildPaths
         var testCoverageOutputDir = artifactsDir.Combine("code-coverage");
         var testConverageOutputResultsDir = testCoverageOutputDir.Combine("results");
         
-        var zipArtifactPath = $"{artifactsDir.FullPath}/{semVersion}.zip";
+        var zipArtifactPath = $"{artifactsDir.FullPath}/HelloCake.zip";
 
         // Directories
         var buildDirectories = new BuildDirectories(artifactsDir, binArtifactsDir, testResultOutputDir, testCoverageOutputDir, testConverageOutputResultsDir);

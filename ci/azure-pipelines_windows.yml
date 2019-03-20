@@ -39,9 +39,10 @@ steps:
   - task: CopyFiles@2
     displayName: 'Copy Files to Artifact Staging'
     inputs:
+      SourceFolder: $(artifactsRootDir)
       Contents: |
-        $(artifactsRootDir)\**\*.zip
-        $(artifactsRootDir)\**\release-notes.md
+        HelloCake.zip
+        release-notes.md
       TargetFolder: $(Build.ArtifactStagingDirectory)
 
   - task: PublishPipelineArtifact@0
