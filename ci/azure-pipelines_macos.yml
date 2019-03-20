@@ -14,8 +14,8 @@ trigger:
       - develop
 
 steps:
-  - script: |
-      pswh build
+  - bash: |
+      build
     displayName: 'Build'
     continueOnError: false
 
