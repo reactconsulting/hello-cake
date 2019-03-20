@@ -15,7 +15,7 @@ trigger:
 
 steps:
   - bash: |
-      ./build
+      pwsh '.\build.ps1'
     displayName: 'Build'
     continueOnError: false
 
