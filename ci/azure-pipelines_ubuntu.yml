@@ -1,0 +1,50 @@
+pool:
+  vmImage: vs2017-win2016
+
+variables:
+  artifactsRootDir: $(System.DefaultWorkingDirectory)/.artifacts
+
+name: hello-cake
+trigger:
+  branches:
+    include:
+      - master
+      - hotfix/*
+      - release/*
+      - develop
+
+steps:
+  - script: |
+      build
+    displayName: 'Build'
+    continueOnError: false
+
+  - task: PublishTestResults@2
+    displayName: 'Publish Test Results'
+    inputs:
+      testRunTitle: 'Units Tests'
+      testResultsFiles: $(artifactsRootDir)/**/test-results/**/*.trx
+      searchFolder: $(artifactsRootDir)
+      testResultsFormat: VSTest
+      mergeTestResults: true
+
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish Coverage Results'
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: $(artifactsRootDir)/**/code-coverage/results.*.xml
+      reportDirectory: $(artifactsRootDir)/**/code-coverage/results
+      additionalCodeCoverageFiles: $(artifactsRootDir)/**/code-coverage/results/*
+
+  - task: CopyFiles@2
+    displayName: 'Copy Files to Artifact Staging'
+    inputs:
+      SourceFolder: $(artifactsRootDir)
+      Contents: '\**\*.zip'
+      TargetFolder: $(Build.ArtifactStagingDirectory)
+
+  - task: PublishPipelineArtifact@0
+    displayName: 'Publish Build Artifact'
+    inputs:
+      artifactName: 'drop'
+      targetPath: $(Build.ArtifactStagingDirectory)

@@ -59,8 +59,6 @@ public class BuildParameters
     public BuildPaths Paths { get; private set; }
     public BuildVersion Version { get; private set; }
 
-    public FilePath StrongSignKey { get; private set; }
-
     public bool IsStableRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && IsTagged;
     public bool IsPreRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && !IsTagged;
 
@@ -80,7 +78,7 @@ public class BuildParameters
         {
             Target           = context.Argument("target", "Default"),
             Configuration    = context.Argument("configuration", "Release"),
-            Framework        = context.Argument("framework", "net462"),
+            Framework        = context.Argument("framework", "netstandard2.0"),
 
             EnabledUnitTests      = IsEnabled(context, "ENABLED_UNIT_TESTS"),
             EnabledPublishNuget   = IsEnabled(context, "ENABLED_PUBLISH_NUGET"),
@@ -108,6 +106,8 @@ public class BuildParameters
         Version = BuildVersion.Calculate(context, this, gitVersion);
         CoverageThreshold = lineCoverageThreshold;
         MSBuildSettings = GetMsBuildSettings(context, Version);
+
+        Paths = BuildPaths.GetPaths(context, Configuration, Version);
     }
 
     private DotNetCoreMSBuildSettings GetMsBuildSettings(ICakeContext context, BuildVersion version)
@@ -140,7 +140,7 @@ public class BuildParameters
         if(!string.IsNullOrWhiteSpace(repositoryName))
             context.Information("Repository Name: {0}", repositoryName);
 
-        return !string.IsNullOrWhiteSpace(repositoryName) && StringComparer.OrdinalIgnoreCase.Equals("libraries", repositoryName);
+        return !string.IsNullOrWhiteSpace(repositoryName) && StringComparer.OrdinalIgnoreCase.Equals("reactconsulting/hello-cake", repositoryName);
     }
 
     private static bool IsOnMainBranch(ICakeContext context)
