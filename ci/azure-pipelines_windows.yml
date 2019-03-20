@@ -40,7 +40,7 @@ steps:
     displayName: 'Copy Files to Artifact Staging'
     inputs:
       SourceFolder: $(artifactsRootDir)
-      Contents: '\**\*.zip'
+      Contents: '\**\*.zip' '\**\release-notes.md'
       TargetFolder: $(Build.ArtifactStagingDirectory)
 
   - task: PublishPipelineArtifact@0
