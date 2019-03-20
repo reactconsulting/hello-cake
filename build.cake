@@ -31,7 +31,7 @@ Setup<BuildParameters>(context =>
 {
     var parameters = BuildParameters.GetParameters(Context);
     var gitVersion = GetVersion(parameters);
-    parameters.Initialize(context, gitVersion, 1);
+    parameters.Setup(context, gitVersion, 1);
 
     if (parameters.IsMainBranch && (context.Log.Verbosity != Verbosity.Diagnostic)) {
         Information("Increasing verbosity to diagnostic.");
@@ -102,7 +102,7 @@ Task("Build")
     .IsDependentOn("Clean")
     .Does<BuildParameters>((parameters) =>
     {
-        foreach (var project in Ge)
+        foreach (var project in GetFiles("./src/**/*.csproj"))
         {
             Build(project, parameters.Configuration, parameters.MSBuildSettings);        
         }
@@ -115,7 +115,8 @@ Task("Test")
     {
         var settings = new DotNetCoreTestSettings 
         {
-            Configuration = parameters.Configuration
+            Configuration = parameters.Configuration,
+            NoBuild = false
         };
 
         var timestamp = $"{DateTime.UtcNow:dd-MM-yyyy-HH-mm-ss-FFF}";
@@ -125,10 +126,10 @@ Task("Test")
             CollectCoverage = true,
             CoverletOutputDirectory = parameters.Paths.Directories.TestCoverageOutput,
             CoverletOutputName = $"results.{timestamp}.xml",
-            Exclude = new List<string>() { "[xunit.*]*", "[Omnichannel.Connector.Proxies*]*" }
+            Exclude = new List<string>() { "[xunit.*]*", "[*.Specs?]*" }
         };
 
-        var projects = GetFiles("./**/*.Spec.csproj");
+        var projects = GetFiles("./src/**/*.Spec.csproj");
 
         if (projects.Count > 1)
             coverletSettings.MergeWithFile = $"{coverletSettings.CoverletOutputDirectory.FullPath}/{coverletSettings.CoverletOutputName}";
@@ -167,72 +168,36 @@ Task("Copy-Files")
     .Does<BuildParameters>((parameters) => 
     {
         Information("Copy static files to artifacts"); 
-        CopyFileToDirectory("./LICENSE.md", parameters.Paths.Directories.Artifacts);
-        CopyFiles(GetFiles("./src/resources/**/*"), parameters.Paths.Directories.ArtifactsStaticResources);
+        CopyFileToDirectory("./LICENSE", parameters.Paths.Directories.Artifacts);
 
-        foreach (var project in parameters.Paths.Files.PluginProjects)
+        foreach (var project in GetFiles("./src/**/*.csproj").Select(p => p.FullPath).ToList()
+            .Except(GetFiles("./src/**/*.Spec.csproj").Select(p => p.FullPath).ToList()))
         {
+            FilePath projectPath = File(project); 
+
             var settings = new DotNetCorePublishSettings 
             {
                 NoBuild = true,
                 NoRestore = true,
                 Configuration = parameters.Configuration,
-                OutputDirectory = $"{parameters.Paths.Directories.ArtifactsBin}/{project.GetFilenameWithoutExtension()}",
+                OutputDirectory = $"{parameters.Paths.Directories.ArtifactsBin}/{projectPath.GetFilenameWithoutExtension()}",
                 Framework = parameters.Framework,
                 MSBuildSettings = parameters.MSBuildSettings
             };
 
-            Information("Run publish for {0} ({1}) to {2}", project.GetFilenameWithoutExtension(), settings.Framework, settings.OutputDirectory); 
-            DotNetCorePublish(project.FullPath, settings);
-        }
-    });
-
-Task("Link-Assemblies")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Build not run on Windows.")
-    .Does<BuildParameters>((parameters) => 
-    {
-        var settings = new ILMergeSettings
-        {
-            ArgumentCustomization = args => args.Append($"/keyfile:{MakeAbsolute(parameters.StrongSignKey).FullPath}")
-                .Append($"/log:{MakeAbsolute(parameters.Paths.Directories.ArtifactsLinked.CombineWithFilePath("log.txt")).FullPath}")
-                .Append("/ndebug")
-                .Append("/copyattrs")
-        };
-
-        foreach (var project in parameters.Paths.Files.PluginProjects)
-        {
-            var linkerConfiguration = DeserializeJsonFromFile<JObject>(File($"{project.GetDirectory()}/ilmerge.deps.json"));
-            
-            var projectName = project.GetFilenameWithoutExtension();
-            var projectDir = parameters.Paths.Directories.ArtifactsBin.Combine($"{projectName}");
-            var outputFile = $"{parameters.Paths.Directories.ArtifactsLinked}/{projectName}.dll";
-            var primaryAssembly = File($"{MakeAbsolute(projectDir).FullPath}/{projectName}.dll");
-            var assemblies = new List<FilePath>();
-            foreach(var dep in linkerConfiguration.GetValue("deps")){
-                var path = $"{projectDir.FullPath}/{dep}.dll";
-                if(!FileExists(path))
-                    Error($"File {path} not found!");
-                assemblies.Add(File(path));
-            }
-
-            Information("Run static linking for {0}", projectName);          
-            ILMerge(outputFile, primaryAssembly, assemblies, settings);
+            Information("Run publish for {0} ({1}) to {2}", projectPath.GetFilenameWithoutExtension(), settings.Framework, settings.OutputDirectory); 
+            DotNetCorePublish(projectPath.FullPath, settings);
         }
     });
 
 Task("Pack-Zip")
-    .IsDependentOn("Link-Assemblies")
     .Does<BuildParameters>((parameters) =>
     {
         var temp = parameters.Paths.Directories.Artifacts.Combine(parameters.Version.SemVersion);
         CreateDirectory(temp);
-        var plugins = temp.Combine("plugins");
-        CreateDirectory(plugins);
-        var resources = temp.Combine("resources");
-        CreateDirectory(resources);
 
-        CopyFiles($"{parameters.Paths.Directories.ArtifactsLinked}/**/*.dll", plugins);
-        CopyFiles($"{parameters.Paths.Directories.ArtifactsStaticResources}/**/*", resources);
+        CopyFiles($"{parameters.Paths.Directories.ArtifactsBin}/**/*.dll", temp);
+        CopyFiles($"{parameters.Paths.Directories.Artifacts}/LICENSE", temp);
 
         Zip(temp, parameters.Paths.Files.ZipArtifact);
 
