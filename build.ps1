@@ -132,7 +132,7 @@ $DOTNET_DIR = "./.dotnet"
 $DOTNET_CHANNEL = "Current"
 $DOTNET_INSTALLER = if ($IsWindows) { "dotnet-install.ps1" } else { "dotnet-install.sh" }
 $DOTNET_INSTALLER_URI = "https://dot.net/v1/$DOTNET_INSTALLER"
-$DOTNET_VERSION = (Get-Content ./global.json | ConvertFrom-Json).sdk.version
+$DOTNET_VERSION = if((Test-Path ./global.json -PathType Leaf)) { (Get-Content ./global.json | ConvertFrom-Json).sdk.version }
 
 # Make sure tools folder exists
 if ((Test-Path $PSScriptRoot) -and !(Test-Path $TOOLS_DIR)) {
