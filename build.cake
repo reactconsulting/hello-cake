@@ -3,14 +3,15 @@
  */
 #addin "nuget:?package=Cake.Coverlet&version=2.2.1"
 #addin "nuget:?package=Cake.Json&version=3.0.1"
-#addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
+#addin "nuget:?package=Newtonsoft.Json&version=11.0.2"
+#addin "nuget:?packages=Cake.Gitter&version=0.11.0"
 
 /*
  * Install tools.
  */
 #tool "nuget:?package=GitReleaseNotes&version=0.7.1"
 #tool "nuget:?package=GitVersion.CommandLine&version=4.0.0"
-#tool "nuget:?package=ReportGenerator&version=4.0.13"
+#tool "nuget:?package=ReportGenerator&version=4.1.5"
 #tool "nuget:?package=xunit.runner.console&version=2.4.1"
 
 /*

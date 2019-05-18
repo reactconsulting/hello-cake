@@ -10,6 +10,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloCake", "src\HelloCake\HelloCake.csproj", "{2AB2B6F0-F2E4-49AB-A1B9-ABD7BCD3574B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloCake.Spec", "src\HelloCake.Spec\HelloCake.Spec.csproj", "{1E540F2B-97C0-44E8-84F7-98C774098BDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloCake.Spec", "test\HelloCake.Spec\HelloCake.Spec.csproj", "{1E540F2B-97C0-44E8-84F7-98C774098BDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
