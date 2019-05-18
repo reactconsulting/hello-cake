@@ -3,14 +3,15 @@
  */
 #addin "nuget:?package=Cake.Coverlet&version=2.2.1"
 #addin "nuget:?package=Cake.Json&version=3.0.1"
-#addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
+#addin "nuget:?package=Newtonsoft.Json&version=11.0.2"
+#addin "nuget:?package=Cake.Gitter&version=0.11.0"
 
 /*
  * Install tools.
  */
 #tool "nuget:?package=GitReleaseNotes&version=0.7.1"
 #tool "nuget:?package=GitVersion.CommandLine&version=4.0.0"
-#tool "nuget:?package=ReportGenerator&version=4.0.13"
+#tool "nuget:?package=ReportGenerator&version=4.1.5"
 #tool "nuget:?package=xunit.runner.console&version=2.4.1"
 
 /*
@@ -56,27 +57,6 @@ Teardown<BuildParameters>((context, parameters) =>
 {
     if(context.Successful)
     {
-        // if(parameters.ShouldPublish)
-        // {
-        //     if(parameters.CanPostToGitter)
-        //     {
-        //         var message = "@/all Version " + parameters.Version.SemVersion + " of the GitVersion has just been released, https://www.nuget.org/packages/GitVersion.";
-
-        //         var postMessageResult = Gitter.Chat.PostMessage(
-        //             message: message,
-        //             messageSettings: new GitterChatMessageSettings { Token = parameters.Gitter.Token, RoomId = parameters.Gitter.RoomId}
-        //         );
-
-        //         if (postMessageResult.Ok)
-        //         {
-        //             Information("Message {0} succcessfully sent", postMessageResult.TimeStamp);
-        //         }
-        //         else
-        //         {
-        //             Error("Failed to send message: {0}", postMessageResult.Error);
-        //         }
-        //     }
-        // }
         Information("Finished running tasks. Thanks for your patience :D");
     }
     else
@@ -129,7 +109,7 @@ Task("Test")
             Exclude = new List<string>() { "[xunit.*]*", "[*.Specs?]*" }
         };
 
-        var projects = GetFiles("./src/**/*.Spec.csproj");
+        var projects = GetFiles("./test/**/*.csproj");
 
         if (projects.Count > 1)
             coverletSettings.MergeWithFile = $"{coverletSettings.CoverletOutputDirectory.FullPath}/{coverletSettings.CoverletOutputName}";

@@ -89,7 +89,7 @@ public class BuildParameters
             IsRunningOnMacOS     = context.Environment.Platform.Family == PlatformFamily.OSX,
 
             IsLocalBuild                = buildSystem.IsLocalBuild,
-            IsRunningOnAzurePipeline    = buildSystem.IsRunningOnVSTS,
+            IsRunningOnAzurePipeline    = buildSystem.IsRunningOnAzurePipelinesHosted,
 
             IsMainRepo      = IsOnMainRepo(context),
             IsMainBranch    = IsOnMainBranch(context),
@@ -134,7 +134,7 @@ public class BuildParameters
     {
         var buildSystem = context.BuildSystem();
         string repositoryName = null;
-        if (buildSystem.IsRunningOnVSTS)
+        if (buildSystem.IsRunningOnAzurePipelinesHosted)
             repositoryName = buildSystem.TFBuild.Environment.Repository.RepoName;
 
         if(!string.IsNullOrWhiteSpace(repositoryName))
@@ -147,7 +147,7 @@ public class BuildParameters
     {
         var buildSystem = context.BuildSystem();
         string repositoryBranch = null;
-        if (buildSystem.IsRunningOnVSTS)
+        if (buildSystem.IsRunningOnAzurePipelinesHosted)
             repositoryBranch = buildSystem.TFBuild.Environment.Repository.Branch;
 
         if(!string.IsNullOrWhiteSpace(repositoryBranch))
@@ -159,7 +159,7 @@ public class BuildParameters
     private static bool IsPullRequestBuild(ICakeContext context)
     {
         var buildSystem = context.BuildSystem();
-        if (buildSystem.IsRunningOnVSTS)
+        if (buildSystem.IsRunningOnAzurePipelinesHosted)
         {
             var value = context.EnvironmentVariable("SYSTEM_PULLREQUEST_ISFORK");
             return !string.IsNullOrWhiteSpace(value) && !string.Equals(value, false.ToString(), StringComparison.InvariantCultureIgnoreCase);
