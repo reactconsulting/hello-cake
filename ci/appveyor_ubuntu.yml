@@ -1,0 +1,15 @@
+version: 0.1.{build}
+build:
+  verbosity: minimal
+
+branches:
+  only: 
+    - master
+    - hotfix/*
+    - release/*
+    - develop
+
+image: Ubuntu 18.04 LTS
+
+build_script:
+  - cmd: build
