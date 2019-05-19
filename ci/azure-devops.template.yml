@@ -34,7 +34,7 @@ steps:
   - task: CopyFiles@2
     displayName: 'Copy Files to Artifact Staging'
     inputs:
-      SourceFolder: $(artifactsRootDir)/**/output
+      SourceFolder: $(artifactsRootDir)/$(Build.BuildNumber)/output
       Contents: '**\*'
       TargetFolder: $(Build.ArtifactStagingDirectory)
 
