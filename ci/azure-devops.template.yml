@@ -7,8 +7,7 @@ steps:
     clean: all
 
   # Build, test and generate artifact output
-  - script: |
-      build
+  - powershell: ./build
     displayName: 'Build'
     continueOnError: 'false'
 
@@ -35,7 +34,7 @@ steps:
   - task: CopyFiles@2
     displayName: 'Copy Files to Artifact Staging'
     inputs:
-      SourceFolder: $(artifactsRootDir)/**/output
+      SourceFolder: $(artifactsRootDir)/$(Build.BuildNumber)/output
       Contents: '**\*'
       TargetFolder: $(Build.ArtifactStagingDirectory)
 
