@@ -1,9 +1,6 @@
 version: '{build}'
 image: Visual Studio 2017
 
-build:
-  verbosity: minimal
-
 branches:
   only: 
     - master
@@ -11,9 +8,9 @@ branches:
 skip_tags: true
 
 build_script:
-- ps: .\build.ps1
+  - ps: .\build.ps1
 
 test: off
 
 artifacts:
-- path: .artifacts/**/output
+  - path: .artifacts/**/output
