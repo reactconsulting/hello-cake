@@ -1,15 +1,18 @@
-version: 0.1.{build}
+version: '{build}'
+skip_tags: true
+image: Ubuntu 18.04 LTS
+
 build:
   verbosity: minimal
 
 branches:
   only: 
     - master
-    - hotfix/*
-    - release/*
-    - develop
-
-image: Ubuntu 18.04 LTS
 
 build_script:
-  - cmd: build
+  - ps: ./build.ps1
+
+test: off
+
+artifacts:
+  - path: .artifacts/**/output
