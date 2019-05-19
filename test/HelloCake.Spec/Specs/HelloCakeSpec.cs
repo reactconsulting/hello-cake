@@ -22,7 +22,7 @@ namespace HelloCake.Spec.Specs
             string greeting = this._writer.Greeting(name);
 
             // Assert
-            Assert.Equal($"Hello {name}!j", greeting);
+            Assert.Equal($"Hello {name}!", greeting);
         }
 
         [Theory(DisplayName = "given an empty name when print greeting message then print name")]
