@@ -1,27 +1,18 @@
-pool:
-  vmImage: win1803
-
-variables:
+parameters:
   artifactsRootDir: $(System.DefaultWorkingDirectory)/.artifacts
 
-name: hello-cake
-trigger:
-  branches:
-    include:
-      - master
-      - hotfix/*
-      - release/*
-      - develop
-
-pr:
-- master
-
 steps:
+  # Clean
+  - checkout: self
+    clean: all
+
+  # Build, test and generate artifact output
   - script: |
       build
     displayName: 'Build'
-    continueOnError: false
+    continueOnError: 'false'
 
+  # Publish test results
   - task: PublishTestResults@2
     displayName: 'Publish Test Results'
     inputs:
@@ -31,6 +22,7 @@ steps:
       testResultsFormat: VSTest
       mergeTestResults: true
 
+  # Publish code coverage results
   - task: PublishCodeCoverageResults@1
     displayName: 'Publish Coverage Results'
     inputs:
@@ -39,15 +31,15 @@ steps:
       reportDirectory: $(artifactsRootDir)/**/code-coverage/results
       additionalCodeCoverageFiles: $(artifactsRootDir)/**/code-coverage/results/*
 
+  # Copy generated artifact outputs
   - task: CopyFiles@2
     displayName: 'Copy Files to Artifact Staging'
     inputs:
-      SourceFolder: $(artifactsRootDir)
-      Contents: |
-        $(artifactsRootDir)\**\HelloCake.zip
-        $(artifactsRootDir)\**\release-notes.md
+      SourceFolder: $(artifactsRootDir)/**/output
+      Contents: '**\*'
       TargetFolder: $(Build.ArtifactStagingDirectory)
 
+  # Publish artifacts
   - task: PublishPipelineArtifact@0
     displayName: 'Publish Build Artifact'
     inputs:
