@@ -11,9 +11,7 @@ trigger:
       - stable/*
 
 pr:
-  branches:
-    include:
-      - master
+  - master
 
 jobs:
 
