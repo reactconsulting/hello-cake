@@ -13,6 +13,9 @@ trigger:
       - release/*
       - develop
 
+pr:
+- master
+
 steps:
   - script: |
       build
