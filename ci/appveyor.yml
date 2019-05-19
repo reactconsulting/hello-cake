@@ -8,7 +8,7 @@ branches:
 skip_tags: true
 
 build_script:
-  - ps: .\build.ps1
+  - cmd: build
 
 test: off
 
