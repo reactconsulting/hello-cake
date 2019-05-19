@@ -62,6 +62,8 @@ public class BuildParameters
     public bool IsStableRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && IsTagged;
     public bool IsPreRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && !IsTagged;
 
+    public Dictionary<string, object> ProcessVariables { get; private set; }
+
     /*
      * Get build parameters.
      */
@@ -94,7 +96,9 @@ public class BuildParameters
             IsMainRepo      = IsOnMainRepo(context),
             IsMainBranch    = IsOnMainBranch(context),
             IsPullRequest   = IsPullRequestBuild(context),
-            IsTagged        = IsBuildTagged(context)
+            IsTagged        = IsBuildTagged(context),
+
+            ProcessVariables = new Dictionary<string, object>()
         };
     }
 

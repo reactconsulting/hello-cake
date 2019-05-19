@@ -17,17 +17,18 @@ public class BuildPaths
         var semVersion = version.SemVersion;
         var artifactsDir = (DirectoryPath)(context.Directory("./.artifacts") + context.Directory("v" + semVersion));
         var binArtifactsDir = artifactsDir.Combine("bin");
-        var licensePath = $"{artifactsDir.FullPath}/LICENSE.txt";
-        var releaseNotesPath = $"{artifactsDir.FullPath}/release-notes.md";
+        var artifactsOutputDir = artifactsDir.Combine("output");
+        var licensePath = $"{artifactsOutputDir.FullPath}/LICENSE.txt";
+        var releaseNotesPath = $"{artifactsOutputDir.FullPath}/release-notes.md";
 
         var testResultOutputDir = artifactsDir.Combine("test-results");
         var testCoverageOutputDir = artifactsDir.Combine("code-coverage");
         var testConverageOutputResultsDir = testCoverageOutputDir.Combine("results");
         
-        var zipArtifactPath = $"{artifactsDir.FullPath}/HelloCake.zip";
+        var zipArtifactPath = $"{artifactsOutputDir.FullPath}/HelloCake.zip";
 
         // Directories
-        var buildDirectories = new BuildDirectories(artifactsDir, binArtifactsDir, testResultOutputDir, testCoverageOutputDir, testConverageOutputResultsDir);
+        var buildDirectories = new BuildDirectories(artifactsDir, binArtifactsDir, artifactsOutputDir, testResultOutputDir, testCoverageOutputDir, testConverageOutputResultsDir);
 
         // Files
         var buildFiles = new BuildFiles(context, licensePath, releaseNotesPath, zipArtifactPath);
@@ -58,16 +59,18 @@ public class BuildDirectories
 {
     public DirectoryPath Artifacts { get; private set; }
     public DirectoryPath ArtifactsBin { get; private set; }
+    public DirectoryPath ArtifactsOutput {get; private set; }
     public DirectoryPath TestResultOutput { get; private set; }
     public DirectoryPath TestCoverageOutput { get; private set; }
     public DirectoryPath TestCoverageOutputResults { get; private set; } 
     public ICollection<DirectoryPath> ToClean { get; private set; }
 
-    public BuildDirectories(DirectoryPath artifacts, DirectoryPath artifactsBin, DirectoryPath testResultOutput
+    public BuildDirectories(DirectoryPath artifacts, DirectoryPath artifactsBin, DirectoryPath artifactsOutput, DirectoryPath testResultOutput
         , DirectoryPath testCoverageOutput, DirectoryPath testCoverageOutputResults)
     {
         Artifacts = artifacts;
         ArtifactsBin = artifactsBin;
+        ArtifactsOutput = artifactsOutput;
         TestResultOutput = testResultOutput;
         TestCoverageOutput = testCoverageOutput;
         TestCoverageOutputResults = testCoverageOutputResults;
@@ -75,6 +78,7 @@ public class BuildDirectories
         {
             Artifacts,
             ArtifactsBin,
+            ArtifactsOutput,
             TestResultOutput,
             TestCoverageOutput,
             TestCoverageOutputResults
