@@ -1,6 +1,6 @@
 version: '{build}'
 skip_tags: true
-image: Ubuntu 18.04 LTS
+image: Visual Studio 2017
 
 build:
   verbosity: minimal
