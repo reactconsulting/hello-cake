@@ -1,15 +1,16 @@
-version: 0.1.{build}
-build:
-  verbosity: minimal
+version: '{build}'
+image: Visual Studio 2017
 
 branches:
   only: 
     - master
-    - hotfix/*
-    - release/*
-    - develop
 
-image: Ubuntu 18.04 LTS
+skip_tags: true
 
 build_script:
   - cmd: build
+
+test: off
+
+artifacts:
+  - path: .artifacts/**/output
