@@ -10,11 +10,6 @@ trigger:
       - preview/*
       - stable/*
 
-pr:
-  branches:
-    include:
-      - master
-
 jobs:
 
   - job: build_windows_agent
