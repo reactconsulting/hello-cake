@@ -91,6 +91,9 @@ Task("Build")
 Task("Test")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledUnitTests, "Unit tests were disabled.")
     .IsDependentOn("Build")
+    .OnError<BuildParameters>((exception, parameters) => {
+        parameters.ProcessVariables.Add("IsTestsFailed", true);
+    })
     .Does<BuildParameters>((parameters) => 
     {
         var settings = new DotNetCoreTestSettings 
@@ -131,6 +134,7 @@ Task("Test")
     });
 
 Task("Coverage-Report")
+    .WithCriteria<BuildParameters>((context, parameters) => GetFiles($"{parameters.Paths.Directories.TestCoverageOutput.FullPath}/**/*.xml").Count != 0)
     .Does<BuildParameters>((parameters) => 
     {
         var settings = new ReportGeneratorSettings
@@ -171,6 +175,8 @@ Task("Copy-Files")
     });
 
 Task("Pack-Zip")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.ProcessVariables.ContainsKey("IsTestsFailed") 
+        ? !bool.Parse(parameters.ProcessVariables["IsTestsFailed"].ToString()) : true, "Output packages are generated only when all tests are passed.")
     .Does<BuildParameters>((parameters) =>
     {
         var temp = parameters.Paths.Directories.Artifacts.Combine(parameters.Version.SemVersion);
@@ -197,6 +203,9 @@ Task("Release-Notes")
     .Does<BuildParameters>((parameters) => 
     {
         GetReleaseNotes(parameters.Paths.Files.ReleaseNotes);
+
+        if (string.IsNullOrEmpty(System.IO.File.ReadAllText(parameters.Paths.Files.ReleaseNotes.FullPath)))
+            System.IO.File.WriteAllText(parameters.Paths.Files.ReleaseNotes.FullPath, "No issues closed since last release");
     });
 
 Task("Copy")
